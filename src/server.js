@@ -1,5 +1,6 @@
 import express from 'express'
-import { CONNECT_DB, GET_DB } from './config/mongodb'
+import exitHook from 'async-exit-hook'
+import { CLOSE_DB, CONNECT_DB, GET_DB } from '~/config/mongodb'
 
 const START_SERVER = () => {
   const app = express()
@@ -17,6 +18,14 @@ const START_SERVER = () => {
     console.log(
       `3. Hello Duy Nghia Dev, Back-end Server is running successfully at host: ${hostname} and port: ${port}/`
     )
+  })
+
+  // Thực hiện các tác vụ cleanup trước khi dừng server
+  // Đọc thêm ở đây: https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+  exitHook(() => {
+    console.log('4. Disconnecting from MongoDB Cloud Atlas...')
+    CLOSE_DB()
+    console.log('5. Disconnecting from MongoDB Cloud Atlas...')
   })
 }
 
