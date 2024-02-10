@@ -94,10 +94,35 @@ const getDetails = async (id) => {
   }
 }
 
+// Nhiệm vụ của func này là cập nhật push 1 cái giá trị columnId vào cuối mảng columnOrderIds
+const pushColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: new ObjectId(column.boardId)
+        },
+        {
+          $push: {
+            columnOrderIds: column._id
+          }
+        },
+        {
+          returnDocument: 'after'
+        }
+      )
+    return result.value
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNew,
   findOneById,
-  getDetails
+  getDetails,
+  pushColumnOrderIds
 }

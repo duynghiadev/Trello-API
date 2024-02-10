@@ -1,4 +1,5 @@
 import { cardModel } from '~/models/cardModel'
+import { columnModel } from '~/models/columnModel'
 
 const createNew = async (reqBody) => {
   try {
@@ -14,7 +15,10 @@ const createNew = async (reqBody) => {
     const getNewCard = await cardModel.findOneById(createdCard.insertedId)
     console.log(getNewCard)
 
-    // ...
+    if (getNewCard) {
+      // Cập nhật mảng columnOrderIds trong collection boards
+      await columnModel.pushCardOrderIds(getNewCard)
+    }
 
     // Làm thêm các xử lý logic khác với các Collection khác tùy đặc thù dự án...v.v
     // Bắn email, notification về cho admin khi có 1 cái card mới được tạo...v.v
